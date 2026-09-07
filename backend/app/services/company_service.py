@@ -38,3 +38,6 @@ def find_company(company_name: str) -> dict | None:
     """
     key = company_name.strip().lower()
     return _MOCK_COMPANIES.get(key)
+
+def list_companies() -> list[dict]:
+    return list(_MOCK_COMPANIES.values())
