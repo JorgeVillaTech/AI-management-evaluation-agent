@@ -17,7 +17,7 @@ _MOCK_COMPANIES = {
     },
     "globex sa": {
         "name": "Globex S.A.",
-        "sector": "Fintech",
+        "sector": "Fintech Marketing Test",
         "risk_score": 34,
         "trend": "improving",
         "recent_signals": [
