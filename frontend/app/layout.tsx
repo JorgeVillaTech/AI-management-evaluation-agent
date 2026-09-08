@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { CopilotKit } from "@copilotkit/react-core";
-import "@copilotkit/react-ui/styles.css";
+import { CopilotKitProvider } from "@copilotkit/react-core/v2";
+import "@copilotkit/react-core/v2/styles.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,9 +23,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <CopilotKit runtimeUrl="/api/copilotkit">
+        <CopilotKitProvider runtimeUrl="/api/copilotkit" useSingleEndpoint>
           {children}
-        </CopilotKit>
+        </CopilotKitProvider>
       </body>
     </html>
   );
