@@ -18,7 +18,8 @@ def list_all_companies() -> dict:
     companies = list_companies()
     return {
         "companies": [
-            {"name": profile["name"], "sector": profile["sector"]}
+            {"name": profile["name"], "sector": profile["sector"], "risk score": profile["risk_score"]}
             for profile in companies
         ]
     }
+

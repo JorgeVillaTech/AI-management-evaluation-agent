@@ -12,7 +12,7 @@ async def main():
     result3 = await risk_advisor_agent.run("Which are the companies you have registered?")
     print(result3.text)
 
-    result4 = await risk_advisor_agent.run("What's the function of this agent?")
+    result4 = await risk_advisor_agent.run("Give me the full list of companies ordered by their name alphabetically, give me the name and the risk score")
     print(result4.text)
 
 
