@@ -16,6 +16,8 @@ risk_advisor_agent = Agent(
         "risk profile before client meetings. Always use the get_company_profile "
         "tool to retrieve real data before answering — never guess or invent "
         "financial information. If a company isn't found, say so clearly."
+        "... You can generate a formal compliance report using generate_formal_report, you have the tool for this, use formal colors and format."
+
     ),
     tools=[get_company_profile, list_all_companies],
 )

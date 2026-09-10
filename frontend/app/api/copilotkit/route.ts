@@ -6,7 +6,7 @@ import {
 } from "@copilotkit/runtime";
 import { NextRequest } from "next/server";
 
-const riskAdvisorAgent = new HttpAgent({
+const riskAdvisorAgent = new HttpAgent({ // FastAPI server 
     url: "http://localhost:8000/copilotkit",
 });
 
