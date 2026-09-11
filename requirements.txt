@@ -103,6 +103,7 @@ hyperlight-sandbox==0.4.0
 hyperlight-sandbox-backend-wasm==0.4.0
 hyperlight-sandbox-python-guest==0.5.0
 idna==3.19
+iniconfig==2.3.0
 isodate==0.7.2
 Jinja2==3.1.6
 jiter==0.16.0
@@ -158,6 +159,7 @@ opentelemetry-util-genai==0.3b0
 opentelemetry-util-http==0.64b0
 orderedmultidict==1.0.2
 packaging==26.3
+pluggy==1.6.0
 portalocker==3.2.0
 posthog==7.47.0
 powerfx==0.0.34
@@ -175,7 +177,9 @@ pydantic-monty-client==0.0.23
 pydantic-monty-runtime==0.0.23
 pydantic-settings==2.15.0
 pydantic_core==2.46.5
+Pygments==2.21.0
 PyJWT==2.13.0
+pytest==9.1.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.3
 python-multipart==0.0.32

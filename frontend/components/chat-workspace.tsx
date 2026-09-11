@@ -5,6 +5,7 @@ import { z } from "zod";
 import { CompanyProfileCard } from "./company-profile-card";
 import { FormalReportCard } from "./formal-report-card";
 import { MeetingBriefingCard } from "./meeting-briefing-card";
+import { PortfolioSummaryCard } from "./portfolio-summary-card";
 
 interface Company {
     name: string;
@@ -55,6 +56,18 @@ export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[
         return <MeetingBriefingCard briefing={JSON.parse(result)} />;
     },
     });
+
+    useRenderTool({
+    name: "get_portfolio_risk_summary",
+    parameters: z.object({}),
+    render: ({ status, result }) => {
+        if (status !== "complete" || !result) {
+        return <p className="text-sm text-muted-foreground my-2">Analyzing your portfolio...</p>;
+        }
+        return <PortfolioSummaryCard summary={JSON.parse(result)} />;
+    },
+    });
+
 
     const topRisk = [...initialWatchlist].sort((a, b) => b.risk_score - a.risk_score).slice(0, 3);
     useConfigureSuggestions({
