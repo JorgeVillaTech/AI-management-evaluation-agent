@@ -6,6 +6,7 @@ import { CompanyProfileCard } from "./company-profile-card";
 import { FormalReportCard } from "./formal-report-card";
 import { MeetingBriefingCard } from "./meeting-briefing-card";
 import { PortfolioSummaryCard } from "./portfolio-summary-card";
+import { PeerComparisonCard } from "./peer-comparison-card";
 
 interface Company {
     name: string;
@@ -77,6 +78,19 @@ export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[
         })),
         available: "before-first-message",
     });
+
+
+    useRenderTool({
+    name: "compare_to_peers",
+    parameters: z.object({ company_name: z.string() }),
+    render: ({ status, parameters, result }) => {
+        if (status !== "complete" || !result) {
+        return <p className="text-sm text-muted-foreground my-2">Comparing {parameters?.company_name ?? "company"} to its peers...</p>;
+        }
+        return <PeerComparisonCard comparison={JSON.parse(result)} />;
+    },
+});
+
 
     const handleCompanyClick = async (companyName: string) => {
         setLastReviewed(companyName);
