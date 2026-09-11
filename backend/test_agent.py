@@ -18,6 +18,9 @@ async def main():
     result5 = await risk_advisor_agent.run("Prepare a meeting briefing for Acme Corp.")
     print(result5.text)
 
+    result6 = await risk_advisor_agent.run("Which companies in my portfolio need attention right now?")
+    print(result6.text)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

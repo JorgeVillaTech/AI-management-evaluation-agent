@@ -4,6 +4,8 @@ from pydantic import Field
 from app.services.company_service import find_company, list_companies
 from app.services.market_data_service import search_ticker, get_market_data
 from app.services.briefing_service import build_meeting_briefing
+from app.services.portfolio_service import get_portfolio_risk_summary as _get_portfolio_risk_summary
+
 
 def _recommendation_for(risk_level: str) -> str:
     return {
@@ -80,3 +82,8 @@ def prepare_meeting_briefing(
 ) -> dict:
     """Prepares a synthesized meeting briefing combining internal risk analysis with real market data."""
     return build_meeting_briefing(company_name)
+
+
+def get_portfolio_risk_summary() -> dict:
+    """Analyzes the entire watchlist and surfaces the highest-risk and worsening-trend companies needing attention."""
+    return _get_portfolio_risk_summary()
