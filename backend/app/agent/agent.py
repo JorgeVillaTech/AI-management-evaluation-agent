@@ -4,7 +4,7 @@ load_dotenv()
 from agent_framework import Agent
 from agent_framework.openai import OpenAIChatClient
 
-from app.agent.tools import get_company_profile, list_all_companies
+from app.agent.tools import get_company_profile, list_all_companies,generate_formal_report, get_market_data_tool, prepare_meeting_briefing
 
 risk_advisor_agent = Agent(
     client=OpenAIChatClient(),
@@ -17,7 +17,10 @@ risk_advisor_agent = Agent(
         "tool to retrieve real data before answering — never guess or invent "
         "financial information. If a company isn't found, say so clearly."
         "... You can generate a formal compliance report using generate_formal_report, you have the tool for this, use formal colors and format."
+        "...You can also retrieve real, live market data (current price, market cap, exchange) "
+        "using get_market_data_tool when the user asks about a company's actual market standing, "
+        "separate from its internal risk score."
 
     ),
-    tools=[get_company_profile, list_all_companies],
+    tools=[get_company_profile, list_all_companies, generate_formal_report, get_market_data_tool, prepare_meeting_briefing],
 )

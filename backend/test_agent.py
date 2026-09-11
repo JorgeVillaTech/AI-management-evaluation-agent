@@ -12,8 +12,11 @@ async def main():
     result3 = await risk_advisor_agent.run("Which are the companies you have registered?")
     print(result3.text)
 
-    result4 = await risk_advisor_agent.run("Give me the information about the companies which name starts with the letter A")
+    result4 = await risk_advisor_agent.run("What's the current market data for Apple?")
     print(result4.text)
+
+    result5 = await risk_advisor_agent.run("Prepare a meeting briefing for Acme Corp.")
+    print(result5.text)
 
 
 if __name__ == "__main__":

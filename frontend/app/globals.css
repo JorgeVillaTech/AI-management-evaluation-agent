@@ -132,3 +132,31 @@ body {
     @apply font-sans;
   }
 }
+
+:root {
+  --paper: #F7F8FA;
+  --surface: #FFFFFF;
+  --ink: #12172B;
+  --structural: #1E2A4A;
+  --accent: #B45309;
+  --risk-high: #9F1D35;
+  --risk-low: #2F6F4E;
+  --hairline: #D8DCE3;
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --grid-line: rgba(18, 23, 43, 0.045);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}

@@ -1,7 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-
-// Structure
 interface CompanyProfile {
     name: string;
     sector: string;
@@ -11,43 +7,43 @@ interface CompanyProfile {
     error?: string;
 }
 
-function riskVariant(score: number): "default" | "destructive" | "secondary" {
-    if (score >= 60) return "destructive";
-    if (score >= 35) return "secondary";
-    return "default";
+function riskColor(score: number) {
+    if (score >= 60) return "var(--risk-high)";
+    if (score >= 35) return "var(--accent)";
+    return "var(--risk-low)";
 }
 
 export function CompanyProfileCard({ profile }: { profile: CompanyProfile }) {
     if (profile.error) {
         return (
-        <Card className="my-2 border-destructive">
-            <CardContent className="pt-4 text-sm text-muted-foreground">
+        <div className="my-2 border rounded-md p-3 text-sm" style={{ borderColor: "var(--risk-high)", color: "var(--risk-high)" }}>
             {profile.error}
-            </CardContent>
-        </Card>
+        </div>
         );
     }
 
     return (
-        <Card className="my-2">
-        <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>{profile.name}</CardTitle>
-            <Badge variant={riskVariant(profile.risk_score)}>
-            Risk: {profile.risk_score}
-            </Badge>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-            <p><span className="text-muted-foreground">Sector:</span> {profile.sector}</p>
-            <p><span className="text-muted-foreground">Trend:</span> {profile.trend}</p>
-            <div>
-            <span className="text-muted-foreground">Recent signals:</span>
+        <div className="my-2 border rounded-md overflow-hidden" style={{ borderColor: "var(--hairline)" }}>
+        <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "var(--hairline)" }}>
+            <span className="font-display font-medium">{profile.name}</span>
+            <span className="font-mono text-sm px-2 py-0.5 rounded text-white" style={{ background: riskColor(profile.risk_score) }}>
+            {profile.risk_score}
+            </span>
+        </div>
+        <div className="px-4 py-3 text-sm">
+            <div className="grid grid-cols-[80px_1fr] gap-y-1.5">
+            <span className="text-muted-foreground">Sector</span>
+            <span>{profile.sector}</span>
+            <span className="text-muted-foreground">Trend</span>
+            <span>{profile.trend}</span>
+            </div>
+            <div className="mt-3">
+            <span className="text-muted-foreground">Recent signals</span>
             <ul className="list-disc list-inside mt-1">
-                {profile.recent_signals.map((s, i) => (
-                <li key={i}>{s}</li>
-                ))}
+                {profile.recent_signals.map((s, i) => <li key={i}>{s}</li>)}
             </ul>
             </div>
-        </CardContent>
-        </Card>
+        </div>
+        </div>
     );
 }
