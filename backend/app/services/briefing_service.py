@@ -1,5 +1,5 @@
 from app.services.company_service import find_company
-from app.services.market_data_service import search_ticker, get_market_data
+from app.services.market_data_service import search_ticker, get_market_data, get_peers
 
 
 def build_meeting_briefing(company_name: str) -> dict:
@@ -36,4 +36,25 @@ def build_meeting_briefing(company_name: str) -> dict:
         "current_price": market_data["current_price"] if market_data else None,
         "exchange": market_data["exchange"] if market_data else None,
         "talking_points": talking_points,
+    }
+
+
+def build_peer_comparison(company_name: str) -> dict:
+    """Compares a company's key metrics against its industry peers."""
+    ticker_match = search_ticker(company_name)
+    if ticker_match is None:
+        return {"error": f"No ticker found matching '{company_name}'"}
+
+    base_data = get_market_data(ticker_match["symbol"])
+    peer_tickers = get_peers(ticker_match["symbol"])
+
+    # Exclude the company itself from its own peer list, and cap at 4 —
+    # keeps the response focused instead of dumping every peer Finnhub returns.
+    peer_tickers = [t for t in peer_tickers if t != ticker_match["symbol"]][:4]
+    peers_data = [get_market_data(t) for t in peer_tickers]
+    peers_data = [p for p in peers_data if p is not None]
+
+    return {
+        "company": base_data,
+        "peers": peers_data,
     }

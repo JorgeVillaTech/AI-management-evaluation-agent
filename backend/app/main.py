@@ -4,6 +4,7 @@ from agent_framework.ag_ui import add_agent_framework_fastapi_endpoint
 
 from app.routers import companies
 from app.agent.agent import risk_advisor_agent
+from app.routers import conversations
 
 app = FastAPI(title="Management and risk evaluation Agent — Backend")
 
@@ -26,3 +27,5 @@ add_agent_framework_fastapi_endpoint(
 @app.get("/")
 async def health_check():
     return {"status": "ok", "service": "management-risk-evaluation-backend"}
+
+app.include_router(conversations.router)

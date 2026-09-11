@@ -47,3 +47,14 @@ def get_market_data(ticker: str) -> dict | None:
         "current_price": quote.get("c"),
         "day_change_percent": quote.get("dp"),
     }
+
+
+def get_peers(ticker: str) -> list[str]:
+    """Returns a list of peer company tickers in the same industry, from Finnhub."""
+    api_key = os.getenv("FINNHUB_API_KEY")
+    response = requests.get(
+        f"{FINNHUB_BASE_URL}/stock/peers",
+        params={"symbol": ticker, "token": api_key},
+    )
+    response.raise_for_status()
+    return response.json()

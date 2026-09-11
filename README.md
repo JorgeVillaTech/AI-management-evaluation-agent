@@ -161,7 +161,6 @@ The suite covers the service layer directly (no live network calls — external 
 - [x] Live external data integration (Finnhub) with graceful degradation
 - [x] Custom, non-default design system
 - [x] Automated test suite
-- [ ] Hard-enforced (protocol-level) approval gating — currently instruction-based; blocked by a documented event-name mismatch between CopilotKit's `useInterrupt` (`on_interrupt`) and MAF's approval event (`function_approval_request`) at current library versions
 - [ ] Persistent, switchable conversation threads (Claude-style history sidebar)
 - [ ] Peer/sector comparison tool
 

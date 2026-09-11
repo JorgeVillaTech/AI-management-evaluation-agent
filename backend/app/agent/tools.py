@@ -5,6 +5,8 @@ from app.services.company_service import find_company, list_companies
 from app.services.market_data_service import search_ticker, get_market_data
 from app.services.briefing_service import build_meeting_briefing
 from app.services.portfolio_service import get_portfolio_risk_summary as _get_portfolio_risk_summary
+from app.services.briefing_service import build_peer_comparison
+
 
 
 def _recommendation_for(risk_level: str) -> str:
@@ -87,3 +89,10 @@ def prepare_meeting_briefing(
 def get_portfolio_risk_summary() -> dict:
     """Analyzes the entire watchlist and surfaces the highest-risk and worsening-trend companies needing attention."""
     return _get_portfolio_risk_summary()
+
+
+def compare_to_peers(
+    company_name: Annotated[str, Field(description="The company to compare against its industry peers")],
+) -> dict:
+    """Compares a company's market metrics against similar companies in its industry."""
+    return build_peer_comparison(company_name)

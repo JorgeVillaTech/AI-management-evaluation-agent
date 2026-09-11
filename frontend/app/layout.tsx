@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body>
-        <CopilotKitProvider runtimeUrl="/api/copilotkit" useSingleEndpoint>
+        <CopilotKitProvider runtimeUrl="http://localhost:3000/api/copilotkit" useSingleEndpoint>
           {children}
         </CopilotKitProvider>
       </body>

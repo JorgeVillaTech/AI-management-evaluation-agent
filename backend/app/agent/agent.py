@@ -4,7 +4,7 @@ load_dotenv()
 from agent_framework import Agent
 from agent_framework.openai import OpenAIChatClient
 
-from app.agent.tools import get_company_profile, list_all_companies,generate_formal_report, get_market_data_tool, prepare_meeting_briefing, get_portfolio_risk_summary
+from app.agent.tools import get_company_profile, list_all_companies,generate_formal_report, get_market_data_tool, prepare_meeting_briefing, get_portfolio_risk_summary, compare_to_peers
 
 risk_advisor_agent = Agent(
     client=OpenAIChatClient(),
@@ -22,5 +22,5 @@ risk_advisor_agent = Agent(
         "separate from its internal risk score."
 
     ),
-    tools=[get_company_profile, list_all_companies, generate_formal_report, get_market_data_tool, prepare_meeting_briefing, get_portfolio_risk_summary],
+    tools=[get_company_profile, list_all_companies, generate_formal_report, get_market_data_tool, prepare_meeting_briefing, get_portfolio_risk_summary, compare_to_peers],
 )
