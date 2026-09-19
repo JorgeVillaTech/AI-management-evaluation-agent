@@ -32,7 +32,6 @@ export function MeetingBriefingCard({ briefing }: { briefing: MeetingBriefing })
             <div className="font-display font-medium">{briefing.company_name}</div>
             <div className="text-xs text-muted-foreground">Meeting Briefing · {briefing.sector}</div>
             </div>
-            <span className="font-mono text-xs px-2.5 py-0.5 rounded-full text-white" style={{ background: levelColor(briefing.risk_level) }}>
             {briefing.risk_level ? (
                 <span className="font-mono text-xs px-2.5 py-0.5 rounded-full text-white" style={{ background: levelColor(briefing.risk_level) }}>
                     {briefing.risk_level} risk
@@ -40,7 +39,6 @@ export function MeetingBriefingCard({ briefing }: { briefing: MeetingBriefing })
                 ) : (
                 <span className="font-mono text-xs px-2.5 py-0.5 rounded-full text-white bg-gray-400">No risk data</span>
                 )}
-            </span>
         </div>
 
         <div className="px-4 py-3 grid grid-cols-2 gap-3 border-b text-sm" style={{ borderColor: "var(--hairline)" }}>

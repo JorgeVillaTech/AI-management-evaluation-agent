@@ -46,6 +46,9 @@ def build_peer_comparison(company_name: str) -> dict:
         return {"error": f"No ticker found matching '{company_name}'"}
 
     base_data = get_market_data(ticker_match["symbol"])
+    if base_data is None:
+        return {"error": f"No market data available for ticker '{ticker_match['symbol']}'"}
+
     peer_tickers = get_peers(ticker_match["symbol"])
 
     # Exclude the company itself from its own peer list, and cap at 4 —

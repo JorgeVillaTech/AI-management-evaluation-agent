@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import { CopilotChat, useAgent, useRenderTool } from "@copilotkit/react-core/v2";
+import { useState, useEffect, useRef } from "react";
+import { CopilotChat, useAgent, useRenderTool, UseAgentUpdate } from "@copilotkit/react-core/v2";
 import { z } from "zod";
 import { CompanyProfileCard } from "./company-profile-card";
 import { FormalReportCard } from "./formal-report-card";
@@ -26,6 +26,21 @@ function riskColor(score: number) {
     return "var(--risk-low)";
 }
 
+// Message content in CopilotKit v2 can be a plain string or an array of
+// parts (e.g. [{ type: "text", text: "..." }]) when the message supports
+// attachments. The title endpoint needs plain text either way.
+function extractText(content: unknown): string {
+    if (!content) return "";
+    if (typeof content === "string") return content;
+    if (Array.isArray(content)) {
+        return content
+        .map((part) => (part && typeof part === "object" && "text" in part && typeof part.text === "string" ? part.text : ""))
+        .filter(Boolean)
+        .join("\n");
+    }
+    return "";
+}
+
 export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[] }) {
     const [isWatchlistOpen, setIsWatchlistOpen] = useState(false);
     const [isConversationsOpen, setIsConversationsOpen] = useState(false);
@@ -35,7 +50,7 @@ export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[
     const [renamingId, setRenamingId] = useState<number | null>(null);
     const [renameValue, setRenameValue] = useState("");
 
-    const { agent } = useAgent({ agentId: "default" });
+    const { agent } = useAgent({ agentId: "default", updates: [UseAgentUpdate.OnRunStatusChanged, UseAgentUpdate.OnMessagesChanged], });
 
     useEffect(() => {
         async function loadConversations() {
@@ -54,32 +69,41 @@ export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[
         loadConversations();
     }, []);
 
-    // Titles the conversation you're currently in, using whatever messages it
-    // actually has right now. Called right before switching away or creating a
-    // new one — at that exact moment, agent.messages is guaranteed to still
-    // reflect THIS conversation, not an ambiguous "has the new thread loaded yet" state.
-    const generateTitleIfNeeded = async () => {
-        const current = conversations.find((c) => c.thread_id === activeThreadId);
-        if (!current || current.title !== "New conversation") return;
+    // Titles the active conversation as soon as its first user message shows
+    // up — doesn't need to wait for the agent to finish responding, since
+    // generate-title only ever looks at the user's message. Firing on
+    // agent.messages directly (rather than on an agent.isRunning true->false
+    // edge) means there's no transition to mis-time: activeThreadId and
+    // agent.messages always describe the same, currently-active thread.
+    // titleRequestedRef guards against re-firing on every subsequent message
+    // (assistant replies, tool calls, ...) while the POST above is in flight.
+    const titleRequestedRef = useRef<Set<number>>(new Set());
+
+    useEffect(() => {
+        const target = conversations.find((c) => c.thread_id === activeThreadId);
+        if (!target || target.title !== "New conversation") return;
+        if (titleRequestedRef.current.has(target.id)) return;
 
         const firstUserMessage = agent.messages.find((m: any) => m.role === "user");
-        if (!firstUserMessage) return;
+        const messageText = extractText(firstUserMessage?.content);
+        if (!messageText) return;
 
-        try {
-        const res = await fetch(`http://localhost:8000/conversations/${current.id}/generate-title`, {
+        titleRequestedRef.current.add(target.id);
+        fetch(`http://localhost:8000/conversations/${target.id}/generate-title`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: firstUserMessage.content ?? "" }),
+            body: JSON.stringify({ message: messageText }),
+        })
+        .then((r) => r.json())
+        .then((updated) => {
+            setConversations((prev) => prev.map((c) => (c.id === target.id ? { ...c, title: updated.title } : c)));
+        })
+        .catch(() => {
+            titleRequestedRef.current.delete(target.id);
         });
-        const updated = await res.json();
-        setConversations((prev) => prev.map((c) => (c.id === current.id ? { ...c, title: updated.title } : c)));
-        } catch {
-        // Non-critical: if titling fails, the conversation just keeps its default name.
-        }
-    };
+    }, [agent.messages, activeThreadId, conversations]);
 
     const handleNewConversation = async () => {
-        await generateTitleIfNeeded();
         const created = await fetch("http://localhost:8000/conversations", { method: "POST" }).then((r) => r.json());
         setConversations((prev) => [created, ...prev]);
         setActiveThreadId(created.thread_id);
@@ -87,7 +111,6 @@ export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[
 
     const handleSwitchConversation = async (threadId: string) => {
         if (threadId === activeThreadId) return;
-        await generateTitleIfNeeded();
         setActiveThreadId(threadId);
     };
 

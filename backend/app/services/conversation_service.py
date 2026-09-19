@@ -34,7 +34,8 @@ def generate_title(message: str) -> str:
             {"role": "system", "content": "Summarize this into a short, specific chat title (3-6 words, no quotes, no trailing punctuation). Always include the specific subject or company name mentioned, not just the general action."},
             {"role": "user", "content": message},
         ],
-        max_tokens=20,
+        max_completion_tokens=30,
+        reasoning_effort="none",
     )
     return response.choices[0].message.content.strip()
 
