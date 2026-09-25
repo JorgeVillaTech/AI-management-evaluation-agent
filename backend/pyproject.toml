@@ -187,7 +187,6 @@ dependencies = [
     "python-ulid==4.0.1",
     "pythonnet==3.0.5",
     "pytz==2026.3.post1",
-    "pywin32==312",
     "pyyaml==6.0.3",
     "qdrant-client==1.19.0",
     "redis==7.1.1",
