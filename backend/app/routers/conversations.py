@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from app.services.conversation_service import create_conversation, list_conversations, rename_conversation, delete_conversation, generate_title
+from app.rate_limit import rate_limit
 
 
 router = APIRouter(prefix="/conversations", tags=["conversations"])
@@ -34,7 +35,7 @@ async def delete_conversation_endpoint(conversation_id: int):
         raise HTTPException(status_code=404, detail="Conversation not found")
     return {"status": "deleted"}
 
-@router.post("/{conversation_id}/generate-title")
+@router.post("/{conversation_id}/generate-title", dependencies=[Depends(rate_limit)])
 async def generate_title_endpoint(conversation_id: int, body: TitleRequest):
     title = generate_title(body.message)
     updated = rename_conversation(conversation_id, title)

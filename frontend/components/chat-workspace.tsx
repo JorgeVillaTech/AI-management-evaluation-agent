@@ -7,6 +7,7 @@ import { FormalReportCard } from "./formal-report-card";
 import { MeetingBriefingCard } from "./meeting-briefing-card";
 import { PortfolioSummaryCard } from "./portfolio-summary-card";
 import { PeerComparisonCard } from "./peer-comparison-card";
+import { API_URL } from "@/lib/config";
 
 interface Company {
     name: string;
@@ -54,11 +55,11 @@ export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[
 
     useEffect(() => {
         async function loadConversations() {
-        const res = await fetch("http://localhost:8000/conversations");
+        const res = await fetch(`${API_URL}/conversations`);
         const list: ConversationSummary[] = await res.json();
 
         if (list.length === 0) {
-            const created = await fetch("http://localhost:8000/conversations", { method: "POST" }).then((r) => r.json());
+            const created = await fetch(`${API_URL}/conversations`, { method: "POST" }).then((r) => r.json());
             setConversations([created]);
             setActiveThreadId(created.thread_id);
         } else {
@@ -89,7 +90,7 @@ export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[
         if (!messageText) return;
 
         titleRequestedRef.current.add(target.id);
-        fetch(`http://localhost:8000/conversations/${target.id}/generate-title`, {
+        fetch(`${API_URL}/conversations/${target.id}/generate-title`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: messageText }),
@@ -104,7 +105,7 @@ export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[
     }, [agent.messages, activeThreadId, conversations]);
 
     const handleNewConversation = async () => {
-        const created = await fetch("http://localhost:8000/conversations", { method: "POST" }).then((r) => r.json());
+        const created = await fetch(`${API_URL}/conversations`, { method: "POST" }).then((r) => r.json());
         setConversations((prev) => [created, ...prev]);
         setActiveThreadId(created.thread_id);
     };
@@ -115,17 +116,20 @@ export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[
     };
 
     const handleRename = async (id: number) => {
-        await fetch(`http://localhost:8000/conversations/${id}`, {
+        const trimmed = renameValue.trim();
+        setRenamingId(null);
+        if (!trimmed) return;
+
+        await fetch(`${API_URL}/conversations/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: renameValue }),
+        body: JSON.stringify({ title: trimmed }),
         });
-        setConversations((prev) => prev.map((c) => (c.id === id ? { ...c, title: renameValue } : c)));
-        setRenamingId(null);
+        setConversations((prev) => prev.map((c) => (c.id === id ? { ...c, title: trimmed } : c)));
     };
 
     const handleDeleteConversation = async (id: number, threadId: string) => {
-        await fetch(`http://localhost:8000/conversations/${id}`, { method: "DELETE" });
+        await fetch(`${API_URL}/conversations/${id}`, { method: "DELETE" });
         const remaining = conversations.filter((c) => c.id !== id);
         setConversations(remaining);
 
@@ -272,7 +276,13 @@ export function ChatWorkspace({ initialWatchlist }: { initialWatchlist: Company[
                         value={renameValue}
                         onChange={(e) => setRenameValue(e.target.value)}
                         onBlur={() => handleRename(c.id)}
-                        onKeyDown={(e) => e.key === "Enter" && handleRename(c.id)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") e.currentTarget.blur();
+                            if (e.key === "Escape") {
+                                setRenameValue("");
+                                e.currentTarget.blur();
+                            }
+                        }}
                         className="w-full px-4 py-2.5 text-sm bg-transparent outline-none"
                     />
                     ) : (

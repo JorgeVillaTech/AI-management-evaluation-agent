@@ -48,10 +48,6 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-body {
-  font-family: Arial Black, Helvetica, sans-serif;
-}
-
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

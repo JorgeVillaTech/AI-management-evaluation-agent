@@ -1,8 +1,7 @@
 from app.database import Base, engine, SessionLocal
 from app.models.company import Company
-from app.services.company_service import _MOCK_COMPANIES
 
-_SEED_DATA = [{
+_SEED_DATA = {
     "acme corp": {"name": "Acme Corp", "sector": "Industrial manufacturing", "risk_score": 72, "trend": "stable", "recent_signals": ["12% increase in short-term debt in the last quarter", "Announced expansion into the Latin American market"]},
     "globex sa": {"name": "Globex S.A.", "sector": "Fintech", "risk_score": 34, "trend": "improving", "recent_signals": ["Successfully closed a Series C funding round", "Reduced executive staff turnover"]},
     "nova biotech": {"name": "Nova Biotech", "sector": "Biotechnology", "risk_score": 61, "trend": "improving", "recent_signals": ["Phase 2 trial results published positively", "New strategic partnership with a major pharma distributor"]},
@@ -33,13 +32,13 @@ _SEED_DATA = [{
     "cobalt semiconductor": {"name": "Cobalt Semiconductor", "sector": "Semiconductors", "risk_score": 57, "trend": "worsening", "recent_signals": ["Chip demand softened in key end markets", "Capital expenditure plans scaled back"]},
     "brightpath education group": {"name": "BrightPath Education Group", "sector": "Education services", "risk_score": 33, "trend": "stable", "recent_signals": ["Enrollment numbers steady year over year", "New online program launched"]},
     "ashford textiles": {"name": "Ashford Textiles", "sector": "Textiles & manufacturing", "risk_score": 81, "trend": "worsening", "recent_signals": ["Major client contract not renewed", "Currency exposure increased losses this quarter"]},
-}]
+}
 
 Base.metadata.create_all(bind=engine)
 
 db = SessionLocal()
 try:
-    for data in _SEED_DATA:
+    for data in _SEED_DATA.values():
         if db.query(Company).filter(Company.name == data["name"]).first():
             continue
         db.add(Company(**data))

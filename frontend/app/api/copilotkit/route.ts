@@ -5,9 +5,10 @@ import {
     copilotRuntimeNextJSAppRouterEndpoint,
 } from "@copilotkit/runtime";
 import { NextRequest } from "next/server";
+import { API_URL } from "@/lib/config";
 
 const riskAdvisorAgent = new HttpAgent({ // FastAPI server 
-    url: "http://localhost:8000/copilotkit",
+    url: `${API_URL}/copilotkit`,
 });
 
 const runtime = new CopilotRuntime({

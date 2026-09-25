@@ -1,7 +1,9 @@
 import { ChatWorkspace } from "@/components/chat-workspace";
+import { API_URL } from "@/lib/config";
+
 
 async function getWatchlist() {
-  const res = await fetch("http://localhost:8000/companies", { cache: "no-store" });
+  const res = await fetch(`${API_URL}/companies`, { cache: "no-store" });
   if (!res.ok) return [];
   return res.json();
 }

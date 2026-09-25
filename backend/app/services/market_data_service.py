@@ -10,6 +10,7 @@ def search_ticker(company_name: str) -> dict | None:
     response = requests.get(
         f"{FINNHUB_BASE_URL}/search",
         params={"q": company_name, "token": api_key},
+        timeout=10,
     )
     response.raise_for_status()
     results = response.json().get("result", [])
@@ -28,11 +29,13 @@ def get_market_data(ticker: str) -> dict | None:
     profile = requests.get(
         f"{FINNHUB_BASE_URL}/stock/profile2",
         params={"symbol": ticker, "token": api_key},
+        timeout=10,
     ).json()
 
     quote = requests.get(
         f"{FINNHUB_BASE_URL}/quote",
         params={"symbol": ticker, "token": api_key},
+        timeout=10,
     ).json()
 
     if not profile:
@@ -55,6 +58,7 @@ def get_peers(ticker: str) -> list[str]:
     response = requests.get(
         f"{FINNHUB_BASE_URL}/stock/peers",
         params={"symbol": ticker, "token": api_key},
+        timeout=10,
     )
     response.raise_for_status()
     return response.json()

@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from app.rate_limit import rate_limit
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from agent_framework.ag_ui import add_agent_framework_fastapi_endpoint
 
@@ -9,13 +10,20 @@ from app.routers import conversations
 from app.database import Base, engine
 from app.models import company, conversation  # noqa: F401 — imported so their tables register with Base
 
+import os
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Management and risk evaluation Agent — Backend")
 
+allowed_origins = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:3001,http://localhost:3000"
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001", "http://localhost:3000"],  # your future Next.js dev server
+    allow_origins=allowed_origins,  # your future Next.js dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,6 +35,7 @@ add_agent_framework_fastapi_endpoint(
     app=app,
     agent=risk_advisor_agent, #agent exposed
     path="/copilotkit", #route that accepts AG-UI-formatted requests
+    dependencies=[Depends(rate_limit)],
 )
 
 @app.get("/")

@@ -126,28 +126,26 @@ agentic-app/
 **Backend**
 ```bash
 cd backend
-python -m venv venv
-venv\Scripts\activate        # Windows
-pip install -r requirements.txt
+uv sync
 # .env: OPENAI_API_KEY, OPENAI_CHAT_MODEL, FINNHUB_API_KEY
-python seed_db.py
-uvicorn app.main:app --reload --port 8000
+uv run python seed_db.py
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
 **Frontend**
 ```bash
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
-Open `http://localhost:3000` — **not** a network IP; the dev server's hot-reload connection requires `localhost`.
+Open `http://localhost:3001` — **not** a network IP; the dev server's hot-reload connection requires `localhost`.
 
 ## ✅ Testing
 
 ```bash
 cd backend
-pytest
+uv run pytest
 ```
 
 The suite covers the service layer directly (no live network calls — external APIs are mocked), including a **regression test for a real bug found during development**: the portfolio summary's "top concerns" and "worsening trend" lists initially overlapped completely; a test now asserts they're always disjoint.
@@ -161,8 +159,8 @@ The suite covers the service layer directly (no live network calls — external 
 - [x] Live external data integration (Finnhub) with graceful degradation
 - [x] Custom, non-default design system
 - [x] Automated test suite
-- [ ] Persistent, switchable conversation threads (Claude-style history sidebar)
-- [ ] Peer/sector comparison tool
+- [x] Persistent, switchable conversation threads (Claude-style history sidebar)
+- [x] Peer/sector comparison tool
 
 ## 🧗 A note on the journey
 
