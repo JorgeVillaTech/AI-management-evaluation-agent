@@ -8,11 +8,13 @@ from app.agent.agent import risk_advisor_agent
 from app.routers import conversations
 
 from app.database import Base, engine
-from app.models import company, conversation  # noqa: F401 — imported so their tables register with Base
+from app.models import company, conversation 
+from seed_db import seed_companies
 
 import os
 
 Base.metadata.create_all(bind=engine)
+seed_companies()
 
 app = FastAPI(title="Management and risk evaluation Agent — Backend")
 
